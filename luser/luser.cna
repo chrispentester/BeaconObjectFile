@@ -1,0 +1,34 @@
+# $1 = beacon ID
+# $2 = DOMAIN\user
+# $3 = password
+
+alias luser {
+	local('$handle $data $args $domain $user $pass $arch');
+
+	# check our arguments
+	if (size(@_) != 3) {
+		berror($1, "luser: not enough arguments");
+		return;
+	}
+
+	# parse our arguments
+	($domain, $user) = split('\\\\', $2);
+	$pass		= $3;
+
+	# read in our BOF file...
+	$arch = barch($1);
+	$handle = openf(script_resource("luser. $+ $arch $+ .o"));
+	$data	= readb($handle, -1);
+	closef($handle);
+
+	# pack our arguments
+	$args	= bof_pack($1, "zzz", $domain, $user, $pass);
+
+	# announce to our user..
+	btask($1, "create token as $2");
+
+	# run a BOF
+	beacon_inline_execute($1, $data, "go", $args);
+}
+beacon_command_register("luser", "LogonUser to create a token with credentials", "Synopsis: luser [DOMAIN\\user] [password]\n\nLogonUser Win32API beacon object file to create and use a token with user creds both locally and remotely.");
+
