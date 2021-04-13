@@ -3,9 +3,6 @@
 # $1 = beacon ID
 # $2 = pid
 # $3 = listener
-# scp * 192.168.122.130:/root/BeaconObjectFile/syscall_shellcodeinject
-# x86_64-w64-mingw32-gcc -c syscall_shellcodeinject.c -o syscall_shellcodeinject.x64.o -masm=intel
-# i686-w64-mingw32-gcc -c syscall_shellcodeinject.c -o syscall_shellcodeinject.x86.o -masm=intel
 # x86_64-w64-mingw32-gcc -c syscall_shellcodeinject.c -o syscall_shellcodeinject.o -masm=intel
 
 
