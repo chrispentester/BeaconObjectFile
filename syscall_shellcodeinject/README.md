@@ -10,4 +10,5 @@ Converted normal shellcode inject with win32 APIs to direct syscalls
 
 NOTE: Currently only for x64
 Load the CNA script in Cobalt Strike, then the following command will be included:
+
 `syscall_shellcodeinject PID Listener` - Inject shellcode created for listener to target PID
