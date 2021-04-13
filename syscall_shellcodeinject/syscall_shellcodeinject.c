@@ -5,8 +5,6 @@
 #include "Syscalls.h"
 #include "syscalls-asm.h"
 
-WINBASEAPI LPVOID WINAPI KERNEL32$VirtualAllocEx (HANDLE hProcess, LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect);
-
 void go(char * argc, int len)
 {
 	char* shellcode;
