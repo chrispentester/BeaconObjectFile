@@ -1,3 +1,5 @@
+// Chris Sikes
+// Apr 2021
 #include <windows.h>
 #include "beacon.h"
 #include "Syscalls.h"
