@@ -1,3 +1,3 @@
 # BeaconObjectFile
 
-Beacon Object Files for direct access to win32 apis or direct syscalls
+Cobalt Strike's Beacon Object Files for direct access to win32 apis or direct syscalls
