@@ -1,3 +1,5 @@
+# Chris Sikes
+# Apr 2021
 # $1 = beacon ID
 # $2 = pid
 # $3 = listener
@@ -51,5 +53,5 @@ alias syscall_shellcodeinject {
 		beacon_inline_execute($1, $data, "go", $args);
 	}
 }
-beacon_command_register("syscall_shellcodeinject", "Basic PE shellcode injection method via syscalls", "Synopsis: syscall_shellcodeinject [pid] \n\nBasic OpenProcess, VirtualAllocEx, WriteProcessMemory, and CreateRemoteThread\nWin32APIs in a beacon object file to inject into a target PID.\nThis is only for x64.");
+beacon_command_register("syscall_shellcodeinject", "Basic PE shellcode injection method via syscalls", "Synopsis: syscall_shellcodeinject [pid] [listener] \n\nBasic OpenProcess, VirtualAllocEx, WriteProcessMemory, and CreateRemoteThread\nWin32APIs in a beacon object file to inject into a target PID.\nThis is only for x64.");
 
