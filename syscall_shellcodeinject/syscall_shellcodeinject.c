@@ -28,9 +28,8 @@ void go(char * argc, int len)
 	{
 		NtWriteVirtualMemory(Process_Handle, Alloc, shellcode, shell_len, NULL);
 		NtCreateThreadEx(&Remote_Thread, THREAD_ALL_ACCESS, NULL, Process_Handle, Alloc, NULL, FALSE, 0, 0, 0, NULL);
+		NtClose(Remote_Thread);
 	}
-
-	NtClose(Remote_Thread);
 	NtClose(Process_Handle);
 
 }
