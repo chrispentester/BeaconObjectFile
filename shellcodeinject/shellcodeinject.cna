@@ -3,7 +3,6 @@
 # $1 = beacon ID
 # $2 = pid
 # $3 = listener
-# scp * 192.168.122.130:/root/BeaconObjectFile/shellcodeinject
 # x86_64-w64-mingw32-gcc -c shellcodeinject.c -o shellcodeinject.x64.o
 # i686-w64-mingw32-gcc -c shellcodeinject.c -o shellcodeinject.x86.o
 # x86_64-w64-mingw32-gcc -c shellcodeinject.c -o shellcodeinject.o
