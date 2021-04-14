@@ -15,6 +15,6 @@ Load the CNA script in Cobalt Strike, then the following command will be include
 
 # OPSEC Concern
 
-This will be caught by Get-InjectedThread because for NtCreateThreadEx it's passed the allocate memory's base address "Alloc".
+This will be caught by Get-InjectedThread because for NtCreateThreadEx it uses the allocated memory's base address "Alloc" as StartRoutine.
 This creates a thread with a start address not backed by a module on disk.
 
