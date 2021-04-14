@@ -18,3 +18,4 @@ Load the CNA script in Cobalt Strike, then the following command will be include
 This will be caught by Get-InjectedThread because for NtCreateThreadEx it uses the allocated memory's base address "Alloc" as StartRoutine.
 This creates a thread with a start address not backed by a module on disk.
 
+This will be caught by Sysmon from EventID 8 CreateRemoteThread, since SysmonDrv.sys will hook and enumerate the syscall even in Kernel-Land.
