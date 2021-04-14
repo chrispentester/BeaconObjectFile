@@ -2,6 +2,9 @@
 # Apr 2021
 # $1 = beacon ID
 # $2 = pid
+# scp * 192.168.122.130:/root/BeaconObjectFile/syscall_stcinject
+# x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.x64.o
+# i686-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.x86.o
 # x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.o
 
 alias syscall_stc_shinject {
