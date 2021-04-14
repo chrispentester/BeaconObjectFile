@@ -8,6 +8,7 @@ This is a version of XPN's SetThreadContext as a beacon object file and using di
 # Usage
 
 NOTE: Currently only for x64
+
 Load the CNA script in Cobalt Strike, then the following command will be included:
 
 `syscall_stcinject PID Listener` - Inject shellcode created for listener to target PID
