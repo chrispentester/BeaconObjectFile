@@ -15,4 +15,4 @@ Load the CNA script in Cobalt Strike, then the following command will be include
 
 `qua_spawn PATH Listener` - Inject shellcode created for listener to target PID
 
-Example to spawn calc.exe with a listener named Test: `qua_spawn C:\Windows\System32\calc.exe Test`
+`qua_spawn C:\Windows\System32\calc.exe Test` - Example to spawn calc.exe with a listener named Test 
