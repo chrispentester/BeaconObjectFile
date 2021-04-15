@@ -1,6 +1,6 @@
 # QueueUserAPC Spawn
 
-A Beacon Object File version of the method https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/ used to bypass Get-InjectedThread and Sysmon.
+A Beacon Object File QueueUserAPC spawn and inject used to bypass Get-InjectedThread and Sysmon.
 
 Spawn a path child process and injects shellcode into it.
 
@@ -16,3 +16,6 @@ Load the CNA script in Cobalt Strike, then the following command will be include
 `qua_spawn PATH Listener` - Inject shellcode created for listener to target PID
 
 `qua_spawn C:\Windows\System32\calc.exe Test` - Example to spawn calc.exe with a listener named Test 
+
+# Credit
+Based on https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/
