@@ -1,7 +1,6 @@
 // Chris Sikes
 // Apr 2021
-// Credit to: Seuro Security's Joshua https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/
-// Beacon Object file version
+// Beacon Object file of QueueUserAPC spawn and injection
 #include <windows.h>
 #include "beacon.h"
 
