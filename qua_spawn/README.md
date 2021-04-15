@@ -18,4 +18,4 @@ Load the CNA script in Cobalt Strike, then the following command will be include
 `qua_spawn C:\Windows\System32\calc.exe Test` - Example to spawn calc.exe with a listener named Test 
 
 # Credit
-Based on https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/
+Based on Seuro Security Joshua's https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/
