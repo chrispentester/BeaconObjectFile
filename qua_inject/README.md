@@ -10,4 +10,4 @@ Note: Currently spawns a calc child process and injects shellcode into it.
 
 
 # Credit
-Based on https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/
+Based on Seuro Security Joshua's https://sevrosecurity.com/2020/04/13/process-injection-part-2-queueuserapc/
