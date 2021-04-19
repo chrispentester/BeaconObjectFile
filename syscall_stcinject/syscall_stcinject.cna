@@ -2,7 +2,7 @@
 # Date: Apr 2021
 # $1 = beacon ID
 # $2 = pid
-# x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.o
+# x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.o -masm=intel
 
 alias syscall_stc_shinject {
 	local('$handle $data $args $sc_data');
