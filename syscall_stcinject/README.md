@@ -1,6 +1,6 @@
 # Direct Syscall SetThreadContext Inject 
 
-This is a version of XPN's SetThreadContext as a beacon object file and using direct syscalls.
+This is based on XPN's SetThreadContext technique as a beacon object file and using direct syscalls.
 
 # Compile
 `x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.o -masm=intel`
