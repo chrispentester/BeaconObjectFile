@@ -11,7 +11,7 @@ Spawn a path child process and injects shellcode into it.
 
 # Usage
 
-NOTE: Currently only for x64
+NOTE: Spawn x86->x86 or x64->x64
 
 Load the CNA script in Cobalt Strike, then the following command will be included:
 
