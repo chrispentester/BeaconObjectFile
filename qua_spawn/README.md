@@ -5,7 +5,9 @@ A Beacon Object File QueueUserAPC spawn and inject used to bypass Get-InjectedTh
 Spawn a path child process and injects shellcode into it.
 
 # Compile
-`x86_64-w64-mingw32-gcc -c qua_spawn.c -o qua_spawn.o`
+
+`x86_64-w64-mingw32-gcc -c qua_spawn.c -o qua_spawn.x64.o`
+`i686-w64-mingw32-gcc -c qua_spawn.c -o qua_spawn.x86.o`
 
 # Usage
 
