@@ -2,13 +2,13 @@
 # Date: Apr 2021
 # $1 = beacon ID
 # $2 = pid
-# x86_64-w64-mingw32-gcc -c syscall_stc_inject.c -o syscall_stc_inject.o -masm=intel
+# x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.o -masm=intel
 
 alias syscall_stc_shinject {
 	local('$handle $data $args $sc_data $filename $extension');
 	
 	# read in the right BOF file
-	$handle = openf(script_resource("syscall_stc_inject.o"));
+	$handle = openf(script_resource("syscall_stcinject.o"));
 	$data = readb($handle, -1);
 	closef($handle);
 
@@ -66,7 +66,7 @@ alias syscall_stc_inject {
 	}
 
 	# read in our BOF file...
-	$handle = openf(script_resource("syscall_stc_inject.o"));
+	$handle = openf(script_resource("syscall_stcinject.o"));
 	$data	= readb($handle, -1);
 	closef($handle);
 
