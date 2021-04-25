@@ -11,6 +11,6 @@ NOTE: Currently only for x64
 
 Load the CNA script in Cobalt Strike, then the following command will be included:
 
-`syscall_stcinject PID Listener` - Inject shellcode created for listener to target PID
+`syscall_stc_inject PID Listener` - Inject shellcode created for listener to target PID
 
 `syscall_stc_shinject PID /path/to/payload.bin` - Inject payload.bin file to target PID
