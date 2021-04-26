@@ -2,7 +2,7 @@
 
 This is based on XPN's SetThreadContext technique as a beacon object file and using dynamic syscalls.
 
-Based on ajpc500's method of dynamic syscalls https://github.com/ajpc500/BOFs/tree/main/SyscallsInject
+Based on ajpc500's method of dynamic syscalls.
 
 # Compile
 `x86_64-w64-mingw32-gcc -c dynamicsyscall_stcinject.c -o dynamicsyscall_stcinject.o`
