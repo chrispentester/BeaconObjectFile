@@ -1,7 +1,8 @@
 // Chris Sikes
 // Apr 2021
 // Credit to: XPN's SetThreadContext https://blog.xpnsec.com/undersanding-and-evading-get-injectedthread/
-// Beacon Object file version with direct syscalls
+// Credit to: ajcp500 for BOF Dynamic syscalls https://github.com/ajpc500/BOFs/tree/main/SyscallsInject
+// Beacon Object file version with dynamic syscalls
 #include <windows.h>
 #include "beacon.h"
 #include "Syscalls.h"
