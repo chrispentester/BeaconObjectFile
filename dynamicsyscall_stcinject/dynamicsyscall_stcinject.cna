@@ -2,8 +2,7 @@
 # Date: Apr 2021
 # $1 = beacon ID
 # $2 = pid
-# scp * 192.168.122.130:/root/BeaconObjectFile/dynamicsyscall_stcinject
-# x86_64-w64-mingw32-gcc -c dynamicsyscall_stcinject.c -o dynamicsyscall_stcinject.o -masm=intel
+# x86_64-w64-mingw32-gcc -c dynamicsyscall_stcinject.c -o dynamicsyscall_stcinject.o
 
 alias dynsyscall_stc_shinject {
 	local('$handle $data $args $sc_data $filename $extension');
